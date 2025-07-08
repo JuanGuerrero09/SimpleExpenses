@@ -1,37 +1,37 @@
-import { StyleSheet, View } from 'react-native';
-import { useState } from 'react';
-import ExpandableAmountList from '@/components/ExpandableAmountList';
-import TimeFramerSelecterModal from '@/components/TimeFramerSelecterModal';
-import TopBar from '@/components/TopBar';
+import {getCurrentMonthAndDay} from '@/utils/getDate';
+import { usePathname } from 'expo-router';
+import { View, Pressable, Text, StyleSheet } from 'react-native';
 
 
+interface TopBarProps {
+  onPress: () => void
+}
 
+export default function TopBar ({ onPress }: TopBarProps) {
 
-export default function HomeScreen () {
+  const { month, day } = getCurrentMonthAndDay();
 
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-
-  const onOpenTimeSelecter = () => {
-    setModalVisible(true);
-  };
-
-  const onCloseTimeSelecter = () => {
-    setModalVisible(false);
-  };
+  const pathname = usePathname();
+  console.log(pathname); // → "/(tabs)/calendar"
 
   return (
-    <View style={styles.container}>
-      <TopBar onPress={onOpenTimeSelecter} />
-      <View style={styles.header}>
-        <ExpandableAmountList />
+    <View style={styles.topBar}>
+      <View style={styles.calendarIcon}>
+        <Text style={styles.calendarMonth}>{month}</Text>
+        <Text style={styles.calendarDay}>{day}</Text>
       </View>
-      <View>
-        <TimeFramerSelecterModal visible={modalVisible} onClose={onCloseTimeSelecter} />
-      </View>
+      <Pressable style={styles.addButton} onPress={onPress}>
+        <Text style={styles.addButtonText}>+ Add Time Frame</Text>
+      </Pressable>
+      {/* Icono del calendario, etc... */}
+      {/* {pathname !== '/' && onPress && (
+        <Pressable onPress={onPress} style={styles.button}>
+          <Text>+ Add Time Frame</Text>
+        </Pressable>
+      )} */}
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
