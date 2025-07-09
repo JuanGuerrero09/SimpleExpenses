@@ -11,14 +11,21 @@ const getAmountStyle = (index: number) => {
       return styles.subAmountFaded;
     case 3:
       return styles.subAmountFadedFaded;
+    case 4:
+      return styles.titleStyle;
     default:
-      return styles.subAmountFadedFaded;
+      return styles.titleStyle;
   }
 };
 
 export default getAmountStyle;
 
 const styles = StyleSheet.create({
+  titleStyle: {
+    fontSize: 30,
+    fontWeight: '700',
+    color: Colors.level0,
+  },
   amount: {
     fontSize: 36,
     fontWeight: '700',

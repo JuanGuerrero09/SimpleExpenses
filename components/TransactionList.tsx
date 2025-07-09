@@ -1,15 +1,8 @@
 import { Colors } from '@/constants/Colors';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
 import type { FC } from 'react';
+import { Transaction } from '@/types/types';
 
-
- export interface Transaction {
-  amount: number;
-  title: string;
-  category: string;
-  id: string;
-  date: Date;
-}
 
 
 const TransactionItem: FC<Transaction> = ({ amount, title, category }) => {

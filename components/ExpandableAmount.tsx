@@ -3,8 +3,14 @@ import Animated, {
   LinearTransition,
   withTiming,
   withDelay,
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
 } from 'react-native-reanimated';
-import TransactionList, { Transaction } from './TransactionList';
+import TransactionList from './TransactionList';
+import { Transaction } from '@/types/types';
+import { useEffect } from 'react';
+import getAmountStyle from '@/utils/getStyles';
 
 const { width } = Dimensions.get('window');
 
@@ -77,58 +83,81 @@ interface ExpandableAmountProps {
   textStyle?: any;
 }
 
-export default function ExpandableAmount({
+export default function ExpandableAmount ({
   label,
   amount,
   expanded,
   onPress,
   textStyle,
 }: ExpandableAmountProps) {
-  // const entering = (targetValues: any) => {
-  //   'worklet';
-  //   const animations = {
-  //     originX: withTiming(targetValues.originX, { duration: 300 }),
-  //     opacity: withTiming(1, { duration: 300 }),
-  //     borderRadius: withDelay(100, withTiming(30, { duration: 300 })),
-  //     transform: [
-  //       { rotate: withTiming('0deg', { duration: 300 }) },
-  //       { scale: withTiming(1, { duration: 300 }) },
-  //     ] as any,
-  //   };
 
-  //   const initialValues = {
-  //     originX: -width,
-  //     opacity: 0,
-  //     borderRadius: 10,
-  //     transform: [{ rotate: '90deg' }, { scale: 0.5 }] as any,
-  //   };
+  const offset = useSharedValue(0);
+  const baseStyle = textStyle;
+  const expandedStyle = getAmountStyle(4);
 
-  //   const callback = (finished: boolean) => {
-  //     if (finished) {
-  //       console.log(`ExpandableAmount for ${label} entered`);
-  //     }
-  //   };
+  const textWidth = useSharedValue(0);
+  const containerWidth = width; // ya lo tienes arriba
 
-  //   return {
-  //     initialValues,
-  //     animations,
-  //     callback,
-  //   };
-  // };
+
+  useEffect(() => {
+    if (expanded) {
+      const centerOffset = containerWidth / 2 - textWidth.value / 2;
+      console.log(centerOffset, containerWidth, textWidth.value)
+      offset.value = withSpring(centerOffset + 50, {
+        damping: 15, // resistencia del rebote (menor → más bouncy)
+        stiffness: 120, // velocidad (mayor → más rápido)
+        mass: 1, // masa del objeto animado
+        overshootClamping: false, // si true, evita el rebote (directo al punto)
+        restDisplacementThreshold: 0.01, // precisión de parada
+      }) // Mueve a la derecha
+    } else {
+      offset.value = withSpring(0, {
+        damping: 15, // resistencia del rebote (menor → más bouncy)
+        stiffness: 120, // velocidad (mayor → más rápido)
+        mass: 1, // masa del objeto animado
+        overshootClamping: false, // si true, evita el rebote (directo al punto)
+        restDisplacementThreshold: 0.01, // precisión de parada
+      }) // Vuelve al inicio
+    }
+  }, [expanded]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    // transform: [{ translateX: offset.value }],
+    fontSize: withTiming(expanded ? expandedStyle.fontSize : baseStyle.fontSize, { duration: 300 }),
+    color: withTiming(expanded ? expandedStyle.color : baseStyle.color, { duration: 100 }),
+    fontWeight: expanded ? expandedStyle.fontWeight : baseStyle.fontWeight, // no se puede animar
+  }));
+
+const containerAnimatedStyle = useAnimatedStyle(() => ({
+  transform: [{ translateX: offset.value }],
+}));
+
+
 
   return (
-    <Animated.View layout={LinearTransition.springify()} 
+    <Animated.View layout={LinearTransition.springify().damping(25)}
     // entering={entering}
     >
-      <Pressable onPress={onPress}>
-        <Text style={textStyle}>{`${amount}${label}`}</Text>
-      </Pressable>
+      <Animated.View style={containerAnimatedStyle}>
+  <Pressable onPress={onPress}>
+    <Animated.Text
+      onLayout={(event) => {
+        const layoutWidth = event.nativeEvent.layout.width;
+        textWidth.value = layoutWidth;
+      }}
+      style={animatedStyle}
+    >
+      {`${amount}${label}`}
+    </Animated.Text>
+  </Pressable>
+</Animated.View>
+
       {expanded && (
         <View style={styles.expanded}>
           <Text style={styles.details}>+ Breakdown info here</Text>
           <View style={styles.transactionListContainer}>
-      <TransactionList transactions={transactions} />
-    </View>
+            <TransactionList transactions={transactions} />
+          </View>
         </View>
       )}
     </Animated.View>
@@ -144,7 +173,7 @@ const styles = StyleSheet.create({
     color: '#6A6A6A',
   },
   transactionListContainer: {
-  height: 260, // Ajusta según prefieras
-  overflow: 'hidden',
-},
+    height: 260, // Ajusta según prefieras
+    overflow: 'hidden',
+  },
 });

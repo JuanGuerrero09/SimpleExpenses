@@ -3,6 +3,8 @@
  * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
  */
 
+import { StyleSheet } from 'react-native';
+
 
 const theme = 'light'; // or 'dark', you can change this based on your app's theme
 
@@ -22,6 +24,23 @@ export const Colors = {
   level3: `rgba(${baseColor}, 0.3)`,  // muy tenue
 };
 
+export const ButtonStyle = StyleSheet.create(
+  {
+      Button: {
+    paddingHorizontal: 16,
+    paddingVertical: 4,
+    borderWidth: 1,
+    borderColor: '#DADADA',
+    borderRadius: 20,
+  },
+
+  ButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1A1A1A',
+  },
+  }
+)
 
 // const tintColorLight = '#0a7ea4';
 // const tintColorDark = '#fff';

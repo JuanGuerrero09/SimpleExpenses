@@ -1,7 +1,7 @@
 import {getCurrentMonthAndDay} from '@/utils/getDate';
 import { usePathname } from 'expo-router';
 import { View, Pressable, Text, StyleSheet } from 'react-native';
-
+import { ButtonStyle } from '@/constants/Colors';
 
 interface TopBarProps {
   onPress: () => void
@@ -20,8 +20,8 @@ export default function TopBar ({ onPress }: TopBarProps) {
         <Text style={styles.calendarMonth}>{month}</Text>
         <Text style={styles.calendarDay}>{day}</Text>
       </View>
-      <Pressable style={styles.addButton} onPress={onPress}>
-        <Text style={styles.addButtonText}>+ Add Time Frame</Text>
+      <Pressable style={ButtonStyle.Button} onPress={onPress}>
+        <Text style={ButtonStyle.ButtonText}>+ Add Time Frame</Text>
       </Pressable>
       {/* Icono del calendario, etc... */}
       {/* {pathname !== '/' && onPress && (
@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
   },
 
   calendarIcon: {
+    transform: [{rotate: '-8deg'}],
     width: 48,
     height: 48,
     backgroundColor: '#fff',
@@ -78,17 +79,4 @@ const styles = StyleSheet.create({
     color: '#1A1A1A',
   },
 
-  addButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: '#DADADA',
-    borderRadius: 20,
-  },
-
-  addButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1A1A1A',
-  },
 });

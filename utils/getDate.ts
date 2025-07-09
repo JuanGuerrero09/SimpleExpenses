@@ -1,3 +1,5 @@
+import { DateCategory } from '@/types/types';
+
 export function getCurrentMonthAndDay(): { month: string; day: number } {
   const now = new Date();
 
@@ -18,7 +20,6 @@ function getDayMonthYear(date: Date) {
   };
 }
 
-export type DateCategory = 'today' | 'this_week' | 'this_month' | 'this_year' | 'older'
 
 function isSameDay(d1: Date, d2: Date): boolean {
   const a = getDayMonthYear(d1);

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import ExpandableAmountList from '@/components/ExpandableAmountList';
 import TimeFramerSelecterModal from '@/components/TimeFramerSelecterModal';
 import TopBar from '@/components/TopBar';
+import AddTransactionButton from '@/components/AddTransactionButton';
 
 
 
@@ -25,6 +26,7 @@ export default function HomeScreen () {
       <View style={styles.header}>
         <ExpandableAmountList />
       </View>
+      <AddTransactionButton onPress={() => alert('Hola mundo')} />
       <View>
         <TimeFramerSelecterModal visible={modalVisible} onClose={onCloseTimeSelecter} />
       </View>
@@ -51,7 +53,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
 
   },
-
   calendarIcon: {
     width: 48,
     height: 48,
@@ -78,17 +79,4 @@ const styles = StyleSheet.create({
     color: '#1A1A1A',
   },
 
-  addButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderColor: '#DADADA',
-    borderRadius: 20,
-  },
-
-  addButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1A1A1A',
-  },
 });
